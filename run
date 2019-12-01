@@ -1,0 +1,23 @@
+#!/usr/bin/python3
+
+import sys
+import importlib
+import importlib.util
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        exit('Format: run <day #>...')
+
+    for arg in sys.argv[1:]:
+        n = int(arg)
+        module_name = 'day%02d' % n
+        file_path = './src/%s.py' % module_name
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        with open('input/%s.txt' % module_name) as f:
+            lines = f.readlines()
+            print("Day %d, Part 1:\n%s" % (n, module.part1(lines)))
+            print("Day %d, Part 2:\n%s" % (n, module.part2(lines)))
+
