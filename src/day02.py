@@ -6,7 +6,7 @@ def run_machine(opcode):
         elif opcode[i] == 2:
             opcode[opcode[i + 3]] = opcode[opcode[i + 1]] * opcode[opcode[i + 2]]
         else:
-            raise RuntimeError("Invalid opcode: %d", opcode[i])
+            raise RuntimeError("Invalid opcode: %d" % opcode[i])
         i += 4
     return opcode[0]
 
