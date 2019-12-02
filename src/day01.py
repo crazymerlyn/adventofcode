@@ -1,5 +1,5 @@
 def fuel(x):
-    return x // 3 - 2
+    return max(x // 3 - 2, 0)
 
 def total_fuel(x):
     return 0 if x <= 6 else fuel(x) + total_fuel(fuel(x))
