@@ -1,0 +1,5 @@
+To run the solution for a Problem:
+
+```
+./run <day #>...
+```
