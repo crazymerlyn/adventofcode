@@ -3,6 +3,7 @@
 import sys
 import importlib
 import importlib.util
+import src
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -15,6 +16,7 @@ if __name__ == '__main__':
         spec = importlib.util.spec_from_file_location(module_name, file_path)
         module = importlib.util.module_from_spec(spec)
         sys.modules[module_name] = module
+        sys.modules['src'] = src
         spec.loader.exec_module(module)
         with open('input/%s.txt' % module_name) as f:
             lines = f.readlines()
