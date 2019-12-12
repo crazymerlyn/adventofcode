@@ -1,6 +1,6 @@
 class Machine():
     def __init__(self, tape, instream):
-        self.tape = tape
+        self.tape = tape + [0] * 3000
         self.input = instream
         self.ip = 0
         self.rel = 0
