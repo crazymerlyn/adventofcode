@@ -1,54 +1,40 @@
-import functools
-def part1(lines):
-    total = 10007
-    deck = list(range(total))
+def parse_shuffle(lines, deck_size):
+    mul = 1
+    add = 0
+
     for line in lines:
         line = line.strip()
         if line == "deal into new stack":
-            deck = deck[::-1]
+            mul *= -1
+            add = add * -1 + deck_size - 1
         elif line.startswith("cut"):
             n = int(line.split()[1])
-            if n < 0: n += total
-            deck = deck[n:] + deck[:n]
+            add -= n
         elif line.startswith("deal with increment"):
             n = int(line.split()[-1])
-            newdeck = deck[:]
-            for i in range(total):
-                x = n * i % total
-                newdeck[x] = deck[i]
-            deck = newdeck
+            mul = mul * n % deck_size
+            add = add * n % deck_size
         else:
-            print(line)
-    return deck.index(2019)
+            raise RuntimeError("Unknown command: " % line)
+    return mul, add
 
+def repeat_mul(mul, add, times, mod):
+    return pow(mul, times, mod), add * (pow(mul, times, mod) - 1) * pow(mul-1, mod-2, mod) % mod
+
+def part1(lines):
+    deck_size = 10007
+    mul, add = parse_shuffle(lines, deck_size)
+    return (2019 * mul + add) % deck_size
 
 def part2(lines):
-    total = 119315717514047
+    deck_size = 119315717514047
     times = 101741582076661
 
-    @functools.lru_cache(500)
-    def inv(n):
-        return pow(n, total-2, total)
+    final = 2020
+    mul, add = parse_shuffle(lines, deck_size)
+    mul, add = repeat_mul(mul, add, times, deck_size)
 
-    idx = 2020
-    seen = set([idx])
-    mul = 1
-    add = 0
-    for line in lines[::-1]:
-        line = line.strip()
-        if line == "deal into new stack":
-            mul *= -1
-            add = add * -1 + total - 1
-        elif line.startswith("cut"):
-            n = int(line.split()[1])
-            if n < 0: n += total
-            add += n
-        elif line.startswith("deal with increment"):
-            n = int(line.split()[-1])
-            mul = mul * inv(n) % total
-            add = add * inv(n) % total
-        else:
-            print(line)
-    idx = idx * pow(mul, times, total) + add * (pow(mul, times, total) - 1) * pow(mul-1, total - 2, total)
-    return idx % total
+    # final = x * mul + add
+    x = (final - add) * pow(mul, deck_size-2, deck_size) % deck_size
+    return x
 
