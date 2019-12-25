@@ -21,7 +21,7 @@ class Machine():
 
     def getinput(self):
         if isinstance(self.input, abc.Iterable):
-            return self.input.pop(0)
+            return self.input.pop(0) if self.input else -1
         return self.input()
 
     def get(self, offset):
@@ -52,6 +52,9 @@ class Machine():
                 self.put(3, self.get(1) * self.get(2))
                 self.ip += 4
             elif self.code == 3:
+                if not self.input:
+                    yield None
+                    break
                 self.put(1, self.getinput())
                 self.ip += 2
             elif self.code == 4:
